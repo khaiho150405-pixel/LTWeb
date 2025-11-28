@@ -105,7 +105,8 @@ namespace DoAn_CauLong.Controllers
             viewModel.MaTaiKhoan = taiKhoan.MaTaiKhoan;
             viewModel.TenDangNhap = taiKhoan.TenDangNhap;
             viewModel.Email = taiKhoan.Email;
-            viewModel.MaQuyen = taiKhoan.MaQuyen.Value;
+            // Null-safe lấy MaQuyen. Nếu null, chọn quyền đầu tiên (có thể điều chỉnh thành quyền mặc định cụ thể).
+            viewModel.MaQuyen = taiKhoan.MaQuyen ?? data.PhanQuyens.OrderBy(p => p.MaQuyen).Select(p => p.MaQuyen).FirstOrDefault();
 
             // === THÊM DÒNG NÀY ĐỂ HIỂN THỊ MK HIỆN TẠI ===
             viewModel.MatKhau = taiKhoan.MatKhau;
