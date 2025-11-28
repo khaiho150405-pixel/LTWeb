@@ -6,7 +6,7 @@ using DoAn_CauLong.Filters;
 
 namespace DoAn_CauLong.Controllers
 {
-    // Bỏ [Authorize] vì hệ thống dùng Session, không thiết lập Forms Authentication => gây 401
+    
     //[Authorize]
     [CheckAdmin] // Giữ kiểm tra quyền truy cập Admin/Nhân viên
     public class QuanLyKhuyenMaiController : Controller
