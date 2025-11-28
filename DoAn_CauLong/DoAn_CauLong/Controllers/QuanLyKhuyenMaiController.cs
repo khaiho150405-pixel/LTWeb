@@ -82,9 +82,24 @@ namespace DoAn_CauLong.Controllers
         {
             var km = db.KhuyenMais.Find(id);
             if (km == null) return HttpNotFound();
+
+            // Pre-delete: tìm các sản phẩm đang tham chiếu khuyến mãi này
+            var referencingProducts = db.SanPhams.Where(p => p.MaKhuyenMai == id).ToList();
+            if (referencingProducts.Count > 0)
+            {
+                // Gỡ tham chiếu (SET NULL) để tránh lỗi ràng buộc FK khi xóa
+                foreach (var sp in referencingProducts)
+                {
+                    sp.MaKhuyenMai = null;
+                }
+            }
+
             db.KhuyenMais.Remove(km);
-            db.SaveChanges();
-            TempData["Message"] = "Xóa khuyến mãi thành công";
+            db.SaveChanges(); // EF sẽ thực hiện trong 1 transaction => an toàn tính toàn vẹn
+
+            TempData["Message"] = referencingProducts.Count > 0
+                ? $"Xóa khuyến mãi thành công (đã gỡ khỏi {referencingProducts.Count} sản phẩm)"
+                : "Xóa khuyến mãi thành công";
             return RedirectToAction("Index");
         }
 
